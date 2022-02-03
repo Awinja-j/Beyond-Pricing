@@ -98,12 +98,36 @@ def listings():
                         list_of_markets.append(list)
             return jsonify({'list_of_markets': list_of_markets}), 200
 
-        base_price = request.args.get('base_price')
+
+        operator = ['base_price.e', 'base_price.gt', 'base_price.gte', 'base_price.lt', 'base_price.lte']
+
+        for i in operator:
+            if i in request.args:
+                operator_ = i
+                break
+
+        base_price = request.args[operator_]
         currency = request.args.get('currency')
+
+        base_price = int(base_price)
+
         if base_price and currency:
             for line in listings_:
-                if line['base_price'] == base_price and line['currency'] ==  currency:
-                    list_of_markets.append(line)
+                if operator_ == 'base_price.e':
+                    if line['base_price'] == base_price and line['currency'] ==  currency:
+                        list_of_markets.append(line)
+                if operator_ == 'base_price.gt':
+                    if line['base_price'] > base_price and line['currency'] ==  currency:
+                        list_of_markets.append(line)
+                if operator_ == 'base_price.gte':
+                    if line['base_price'] >= base_price and line['currency'] ==  currency:
+                        list_of_markets.append(line)
+                if operator_ == 'base_price.lt':
+                    if line['base_price'] < base_price and line['currency'] ==  currency:
+                        list_of_markets.append(line)
+                if operator_ == 'base_price.lte':
+                    if line['base_price'] <= base_price and line['currency'] ==  currency:
+                        list_of_markets.append(line)
             return jsonify({'list_of_markets': list_of_markets}),200
             
 
@@ -112,7 +136,6 @@ def listings():
                 if list['currency'] == currency:
                     list_of_markets.append(list)
         return jsonify({'list_of_markets': list_of_markets}), 200
-
         
 
 
